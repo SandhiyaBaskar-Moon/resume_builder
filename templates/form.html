@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Resume Builder</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<h1 class="page-title">Resume Builder</h1>
+
+<div class="container">
+
+    <form action="/preview" method="post">
+
+        <div class="section-title">Personal Information</div>
+
+        <label>Full Name</label>
+        <input type="text" name="name" required>
+
+        <label>Email</label>
+        <input type="email" name="email" required>
+
+        <label>Phone</label>
+        <input type="text" name="phone" required>
+
+        <label>LinkedIn Profile</label>
+        <input type="text" name="linkedin">
+
+        <div class="section-title">Education Qualification</div>
+
+        <label>Masters Degree</label>
+        <input type="text" name="masters">
+
+        <label>Bachelors Degree</label>
+        <input type="text" name="bachelors">
+
+        <label>HSC</label>
+        <input type="text" name="hsc">
+
+        <label>SSLC</label>
+        <input type="text" name="sslc">
+
+        <div class="section-title">Professional Details</div>
+
+        <label>Skills</label>
+        <textarea name="skills"></textarea>
+
+        <label>Certifications</label>
+        <textarea name="certifications"></textarea>
+
+        <label>Internships</label>
+        <textarea name="internships"></textarea>
+
+        <label>Projects</label>
+        <textarea name="projects"></textarea>
+
+        <button type="submit">Preview Resume</button>
+
+    </form>
+
+</div>
+
+</body>
+</html>
+
