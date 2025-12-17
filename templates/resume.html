@@ -68,9 +68,10 @@
 
 <div class="resume">
 
-    {% if photo %}
-        <img src="{{ url_for('static', filename='uploads/' + photo) }}" class="profile-pic">
-    {% endif %}
+    	{{% if photo %}
+  <img src="{{ url_for('static', filename='uploads/' ~ photo) }}" 
+       class="profile-pic">
+	{% endif %}
 
     <h1>{{ data.name }}</h1>
 
@@ -82,20 +83,20 @@
 
     <h2>Education</h2>
     <ul>
-        {% if data.masters %}<li>{{ data.masters }}</li>{% endif %}
-        {% if data.bachelors %}<li>{{ data.bachelors }}</li>{% endif %}
-        {% if data.hsc %}<li>{{ data.hsc }}</li>{% endif %}
-        {% if data.sslc %}<li>{{ data.sslc }}</li>{% endif %}
+  	{% if data.masters %}<li>{{ data.masters }}</li>{% endif %}
+  	{% if data.bachelors %}<li>{{ data.bachelors }}</li>{% endif %}
+  	{% if data.hsc %}<li>{{ data.hsc }}</li>{% endif %}
+  	{% if data.sslc %}<li>{{ data.sslc }}</li>{% endif %}
     </ul>
 
-    {% if data.skills %}
-    <h3>Skills</h3>
+    	{% if data.skills %}
+    <h2>Skills</h2>
     <ul>
-        {% for skill in data.skills.split(',') %}
+  	{% for skill in data.skills.split(',') %}
             <li>{{ skill }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
+  	{% endfor %}
+   </ul>
+	{% endif %}
 
     {% if data.projects %}
     <h3>Projects</h3>
