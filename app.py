@@ -1,43 +1,3 @@
-from flask import Flask, render_template, request, send_file
-from werkzeug.utils import secure_filename
-from reportlab.lib.pagesizes import A4
-from reportlab.pdfgen import canvas
-import os
-import io
-
-app = Flask(__name__)
-
-# Upload folder config
-UPLOAD_FOLDER = 'static/uploads'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-# Create upload folder if not exists
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-
-# Home page – Resume form
-@app.route('/')
-def home():
-    return render_template('form.html')
-
-# Preview resume
-@app.route('/preview', methods=['POST'])
-def preview():
-    data = request.form.to_dict()
-
-    photo = request.files.get('photo')
-    photo_filename = None
-
-    if photo and photo.filename != "":
-        photo_filename = secure_filename(photo.filename)
-        photo.save(os.path.join(app.config['UPLOAD_FOLDER'], photo_filename))
-
-    return render_template(
-        'resume.html',
-        data=data,
-        photo=photo_filename
-    )
-
-# Download resume as PDF
 @app.route('/download', methods=['POST'])
 def download():
     data = request.form
@@ -47,6 +7,14 @@ def download():
     width, height = A4
 
     y = height - 50
+
+    # 👉 PHOTO
+    photo_filename = data.get('photo')
+    if photo_filename:
+        photo_path = os.path.join(app.config['UPLOAD_FOLDER'], photo_filename)
+        if os.path.exists(photo_path):
+            pdf.drawImage(photo_path, width - 150, height - 150,
+                          width=100, height=100, mask='auto')
 
     # Name
     pdf.setFont("Helvetica-Bold", 18)
@@ -66,11 +34,9 @@ def download():
         nonlocal y
         if not content:
             return
-
         pdf.setFont("Helvetica-Bold", 13)
         pdf.drawString(50, y, title)
         y -= 15
-
         pdf.setFont("Helvetica", 11)
         for line in content.split('\n'):
             pdf.drawString(60, y, line)
@@ -94,12 +60,6 @@ def download():
     pdf.save()
 
     buffer.seek(0)
-    return send_file(
-        buffer,
-        as_attachment=True,
-        download_name="resume.pdf",
-        mimetype="application/pdf"
-    )
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 10000)))
+    return send_file(buffer, as_attachment=True,
+                     download_name="resume.pdf",
+                     mimetype="application/pdf")
