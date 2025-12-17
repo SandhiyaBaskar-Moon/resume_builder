@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Resume Builder</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
@@ -11,49 +12,52 @@
 
 <div class="container">
 
-    <form action="/preview" method="post">
+    <form method="POST" action="/preview" enctype="multipart/form-data">
 
         <div class="section-title">Personal Information</div>
 
-        <label>Full Name</label>
-        <input type="text" name="name" required>
+        <label for="name">Full Name</label>
+        <input type="text" id="name" name="name" required>
 
-        <label>Email</label>
-        <input type="email" name="email" required>
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required>
 
-        <label>Phone</label>
-        <input type="text" name="phone" required>
+        <label for="phone">Phone</label>
+        <input type="text" id="phone" name="phone" required>
 
-        <label>LinkedIn Profile</label>
-        <input type="text" name="linkedin">
+        <label for="photo">Upload Photo</label>
+        <input type="file" id="photo" name="photo" accept="image/*">
+
+        <label for="linkedin">LinkedIn Profile</label>
+        <input type="text" id="linkedin" name="linkedin">
 
         <div class="section-title">Education Qualification</div>
 
-        <label>Masters Degree</label>
-        <input type="text" name="masters">
+        <label for="masters">Masters Degree</label>
+        <input type="text" id="masters" name="masters">
 
-        <label>Bachelors Degree</label>
-        <input type="text" name="bachelors">
+        <label for="bachelors">Bachelors Degree</label>
+        <input type="text" id="bachelors" name="bachelors">
 
-        <label>HSC</label>
-        <input type="text" name="hsc">
+        <label for="hsc">HSC</label>
+        <input type="text" id="hsc" name="hsc">
 
-        <label>SSLC</label>
-        <input type="text" name="sslc">
+        <label for="sslc">SSLC</label>
+        <input type="text" id="sslc" name="sslc">
 
         <div class="section-title">Professional Details</div>
 
-        <label>Skills</label>
-        <textarea name="skills"></textarea>
+        <label for="skills">Skills (comma separated)</label>
+        <textarea id="skills" name="skills"></textarea>
 
-        <label>Certifications</label>
-        <textarea name="certifications"></textarea>
+        <label for="certifications">Certifications</label>
+        <textarea id="certifications" name="certifications"></textarea>
 
-        <label>Internships</label>
-        <textarea name="internships"></textarea>
+        <label for="internships">Internships</label>
+        <textarea id="internships" name="internships"></textarea>
 
-        <label>Projects</label>
-        <textarea name="projects"></textarea>
+        <label for="projects">Projects (comma separated)</label>
+        <textarea id="projects" name="projects"></textarea>
 
         <button type="submit">Preview Resume</button>
 
@@ -63,4 +67,3 @@
 
 </body>
 </html>
-

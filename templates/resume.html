@@ -2,12 +2,13 @@
 <html>
 <head>
     <title>Resume Preview</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
     <style>
         body {
             font-family: "Segoe UI", Arial, sans-serif;
-            background-color: #f7f1e3;   /* cream / beige */
-            color: #4b2e2e;              /* brown text */
+            background-color: #f7f1e3;
+            color: #4b2e2e;
             margin: 0;
             padding: 0;
         }
@@ -20,35 +21,32 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
 
+        .profile-pic {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            object-fit: cover;
+            display: block;
+            margin-bottom: 20px;
+        }
+
         h1 {
-            margin-bottom: 5px;
             font-size: 30px;
             border-bottom: 2px solid #4b2e2e;
             padding-bottom: 8px;
         }
 
-        .contact p {
-            margin: 3px 0;
-            font-size: 14px;
-        }
-
-        h2 {
+        h2, h3 {
             margin-top: 30px;
-            font-size: 18px;
-            border-bottom: 1px solid #b08968;
-            padding-bottom: 5px;
             color: #5a3825;
         }
 
         ul {
-            margin-top: 10px;
             padding-left: 20px;
         }
 
-        ul li {
+        li {
             margin-bottom: 6px;
-            font-size: 14px;
-            line-height: 1.5;
         }
 
         .download-btn {
@@ -58,7 +56,6 @@
             color: white;
             border: none;
             cursor: pointer;
-            font-size: 14px;
         }
 
         .download-btn:hover {
@@ -71,76 +68,40 @@
 
 <div class="resume">
 
+    {% if photo %}
+        <img src="{{ url_for('static', filename='uploads/' + photo) }}" class="profile-pic">
+    {% endif %}
+
     <h1>{{ data.name }}</h1>
 
     <div class="contact">
-        {% if data.email %}
-            <p><b>Email:</b> {{ data.email }}</p>
-        {% endif %}
-
-        {% if data.phone %}
-            <p><b>Phone:</b> {{ data.phone }}</p>
-        {% endif %}
-
-        {% if data.linkedin %}
-            <p><b>LinkedIn:</b> {{ data.linkedin }}</p>
-        {% endif %}
+        {% if data.email %}<p><b>Email:</b> {{ data.email }}</p>{% endif %}
+        {% if data.phone %}<p><b>Phone:</b> {{ data.phone }}</p>{% endif %}
+        {% if data.linkedin %}<p><b>LinkedIn:</b> {{ data.linkedin }}</p>{% endif %}
     </div>
 
-    <h2>Education Qualification</h2>
+    <h2>Education</h2>
     <ul>
-        {% if data.masters %}
-            <li><b>Masters Degree:</b> {{ data.masters }}</li>
-        {% endif %}
-        {% if data.bachelors %}
-            <li><b>Bachelors Degree:</b> {{ data.bachelors }}</li>
-        {% endif %}
-        {% if data.hsc %}
-            <li><b>HSC:</b> {{ data.hsc }}</li>
-        {% endif %}
-        {% if data.sslc %}
-            <li><b>SSLC:</b> {{ data.sslc }}</li>
-        {% endif %}
+        {% if data.masters %}<li>{{ data.masters }}</li>{% endif %}
+        {% if data.bachelors %}<li>{{ data.bachelors }}</li>{% endif %}
+        {% if data.hsc %}<li>{{ data.hsc }}</li>{% endif %}
+        {% if data.sslc %}<li>{{ data.sslc }}</li>{% endif %}
     </ul>
 
     {% if data.skills %}
-    <h2>Skills</h2>
+    <h3>Skills</h3>
     <ul>
         {% for skill in data.skills.split(',') %}
-            <li>{{ skill.strip() }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-
-    {% if data.certifications %}
-    <h2>Certifications</h2>
-    <ul>
-        {% for cert in data.certifications.split('.') %}
-            {% if cert.strip() %}
-                <li>{{ cert.strip() }}</li>
-            {% endif %}
-        {% endfor %}
-    </ul>
-    {% endif %}
-
-    {% if data.internships %}
-    <h2>Internships</h2>
-    <ul>
-        {% for intern in data.internships.split('.') %}
-            {% if intern.strip() %}
-                <li>{{ intern.strip() }}</li>
-            {% endif %}
+            <li>{{ skill }}</li>
         {% endfor %}
     </ul>
     {% endif %}
 
     {% if data.projects %}
-    <h2>Projects</h2>
+    <h3>Projects</h3>
     <ul>
-        {% for project in data.projects.split('.') %}
-            {% if project.strip() %}
-                <li>{{ project.strip() }}</li>
-            {% endif %}
+        {% for project in data.projects.split(',') %}
+            <li>{{ project }}</li>
         {% endfor %}
     </ul>
     {% endif %}
