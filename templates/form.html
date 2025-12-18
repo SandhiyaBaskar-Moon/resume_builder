@@ -1,41 +1,40 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Resume Builder</title>
+    <title>Profile Builder</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
+<body class="form-body">
 
-<h2>Resume Form</h2>
+<div class="form-container">
+    <h2>Profile Details</h2>
 
-<form action="/preview" method="POST" enctype="multipart/form-data">
+    <form action="/preview" method="POST" enctype="multipart/form-data">
 
-    <label>Name</label><br>
-    <input type="text" name="name" required><br><br>
+        <input type="text" name="name" placeholder="Full Name" required>
+        <input type="email" name="email" placeholder="Email">
+        <input type="text" name="phone" placeholder="Phone Number">
+        <input type="text" name="linkedin" placeholder="LinkedIn URL">
 
-    <label>Email</label><br>
-    <input type="email" name="email"><br><br>
+        <textarea name="masters" placeholder="Master's Degree"></textarea>
+        <textarea name="bachelors" placeholder="Bachelor's Degree"></textarea>
+        <textarea name="hsc" placeholder="HSC"></textarea>
+        <textarea name="sslc" placeholder="SSLC"></textarea>
 
-    <label>Phone</label><br>
-    <input type="text" name="phone"><br><br>
+        <textarea name="skills" placeholder="Skills (comma separated)"></textarea>
+        <textarea name="certifications" placeholder="Certifications"></textarea>
+        <textarea name="internships" placeholder="Internships"></textarea>
+        <textarea name="projects" placeholder="Projects"></textarea>
 
-    <label>LinkedIn</label><br>
-    <input type="text" name="linkedin"><br><br>
+        <label>Photo</label>
+        <input type="file" name="photo">
 
-    <label>Education</label><br>
-    <textarea name="education"></textarea><br><br>
+        <label>Digital Signature</label>
+        <input type="file" name="signature">
 
-    <label>Skills</label><br>
-    <textarea name="skills"></textarea><br><br>
-
-    <label>Projects</label><br>
-    <textarea name="projects"></textarea><br><br>
-
-    <label>Photo</label><br>
-    <input type="file" name="photo"><br><br>
-
-    <button type="submit">Preview Resume</button>
-
-</form>
+        <button type="submit">Preview Profile</button>
+    </form>
+</div>
 
 </body>
 </html>
