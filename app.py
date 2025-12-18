@@ -3,121 +3,106 @@ from werkzeug.utils import secure_filename
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 import os
-import io
 
 app = Flask(__name__)
 
-# Upload folder
 UPLOAD_FOLDER = "static/uploads"
-app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
-# Home Page – Form
+
 @app.route("/")
-def home():
+def index():
     return render_template("form.html")
 
-# Preview Resume
+
 @app.route("/preview", methods=["POST"])
 def preview():
-    data = request.form.to_dict()
+    data = {}
+    fields = [
+        "name", "email", "phone", "linkedin",
+        "education", "skills", "projects",
+        "internships", "certifications"
+    ]
 
-    # Photo upload
+    for f in fields:
+        value = request.form.get(f, "").strip()
+        if value:
+            if f == "skills":
+                data[f] = [s.strip() for s in value.split(",") if s.strip()]
+            else:
+                data[f] = value
+
+    # photo
     photo = request.files.get("photo")
-    photo_filename = ""
     if photo and photo.filename:
-        photo_filename = secure_filename(photo.filename)
-        photo.save(os.path.join(app.config["UPLOAD_FOLDER"], photo_filename))
+        filename = secure_filename(photo.filename)
+        photo_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+        photo.save(photo_path)
+        data["photo"] = photo_path
 
-    # Signature upload
-    signature = request.files.get("signature")
-    sign_filename = ""
-    if signature and signature.filename:
-        sign_filename = secure_filename(signature.filename)
-        signature.save(os.path.join(app.config["UPLOAD_FOLDER"], sign_filename))
+    # signature
+    sign = request.files.get("signature")
+    if sign and sign.filename:
+        filename = secure_filename(sign.filename)
+        sign_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+        sign.save(sign_path)
+        data["signature"] = sign_path
 
-    return render_template(
-        "resume.html",
-        data=data,
-        photo=photo_filename,
-        signature=sign_filename
-    )
+    app.config["DATA"] = data
+    return render_template("resume.html", data=data)
 
-# Download PDF
-@app.route("/download", methods=["POST"])
-def download():
-    data = request.form
 
-    buffer = io.BytesIO()
-    pdf = canvas.Canvas(buffer, pagesize=A4)
+@app.route("/download")
+def download_pdf():
+    data = app.config.get("DATA")
+
+    file_path = "resume.pdf"
+    c = canvas.Canvas(file_path, pagesize=A4)
     width, height = A4
 
     y = height - 50
+    c.setFont("Helvetica-Bold", 18)
+    c.drawString(50, y, data.get("name", ""))
 
-    # Name
-    pdf.setFont("Helvetica-Bold", 20)
-    pdf.drawString(50, y, data.get("name", ""))
+    y -= 25
+    c.setFont("Helvetica", 11)
+    c.drawString(50, y, f"{data.get('email','')} | {data.get('phone','')}")
+
     y -= 30
+    c.setFont("Helvetica-Bold", 14)
 
-    pdf.setFont("Helvetica", 11)
-
-    # Contact details
-    if data.get("email"):
-        pdf.drawString(50, y, f"Email: {data.get('email')}")
-        y -= 15
-
-    if data.get("phone"):
-        pdf.drawString(50, y, f"Phone: {data.get('phone')}")
-        y -= 15
-
-    if data.get("linkedin"):
-        pdf.drawString(50, y, f"LinkedIn: {data.get('linkedin')}")
-        y -= 25
-
-    # Helper function for sections
-    def draw_section(title, content):
+    def section(title, content):
         nonlocal y
-        if content and content.strip():
-            pdf.setFont("Helvetica-Bold", 14)
-            pdf.drawString(50, y, title)
+        if content:
+            c.drawString(50, y, title)
             y -= 18
-            pdf.setFont("Helvetica", 11)
-            for line in content.split("\n"):
-                pdf.drawString(60, y, line)
-                y -= 14
+            c.setFont("Helvetica", 11)
+            if isinstance(content, list):
+                for i in content:
+                    c.drawString(60, y, f"- {i}")
+                    y -= 14
+            else:
+                c.drawString(60, y, content)
+                y -= 18
+            c.setFont("Helvetica-Bold", 14)
             y -= 10
 
-    draw_section("Education", data.get("education", ""))
-    draw_section("Skills", data.get("skills", ""))
-    draw_section("Certifications", data.get("certifications", ""))
-    draw_section("Internships", data.get("internships", ""))
-    draw_section("Projects", data.get("projects", ""))
+    section("Education", data.get("education"))
+    section("Skills", data.get("skills"))
+    section("Projects", data.get("projects"))
+    section("Internships", data.get("internships"))
+    section("Certifications", data.get("certifications"))
 
-    # Photo (Top Right)
-    photo = data.get("photo")
-    if photo:
-        photo_path = os.path.join(app.config["UPLOAD_FOLDER"], photo)
-        if os.path.exists(photo_path):
-            pdf.drawImage(photo_path, width - 150, height - 150, 90, 90, mask="auto")
+    if "photo" in data:
+        c.drawImage(data["photo"], width - 150, height - 180, 100, 120)
 
-    # Signature (Bottom Left)
-    signature = data.get("signature")
-    if signature:
-        sign_path = os.path.join(app.config["UPLOAD_FOLDER"], signature)
-        if os.path.exists(sign_path):
-            pdf.drawImage(sign_path, 50, 50, 120, 40, mask="auto")
-            pdf.drawString(50, 40, "Signature")
+    if "signature" in data:
+        c.drawImage(data["signature"], width - 200, 80, 120, 40)
 
-    pdf.save()
-    buffer.seek(0)
+    c.save()
+    return send_file(file_path, as_attachment=True)
 
-    return send_file(
-        buffer,
-        as_attachment=True,
-        download_name="resume.pdf",
-        mimetype="application/pdf"
-    )
 
-# Run App
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 10000)))
+    app.run(debug=True)

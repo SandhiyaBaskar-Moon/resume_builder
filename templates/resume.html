@@ -1,81 +1,46 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Profile Preview</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <title>Resume Preview</title>
+  <link rel="stylesheet" href="/static/style.css">
 </head>
-<body class="resume-body">
+<body>
 
 <div class="resume">
 
-    <!-- LEFT PANEL -->
-    <div class="left-panel">
+  <div class="left">
+    {% if data.photo %}
+      <img src="/{{ data.photo }}" class="photo">
+    {% endif %}
 
-        {% if photo %}
-        <img src="{{ url_for('static', filename='uploads/' + photo) }}" class="profile-pic">
-        {% endif %}
+    <h1>{{ data.name }}</h1>
+    <p>{{ data.email }}</p>
+    <p>{{ data.phone }}</p>
+    <p>{{ data.linkedin }}</p>
 
-        <h1>{{ data.name }}</h1>
+    {% if data.skills %}
+    <h3>Skills</h3>
+    <ul>
+      {% for s in data.skills %}
+        <li>{{ s }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  </div>
 
-        {% if data.email %}<p>{{ data.email }}</p>{% endif %}
-        {% if data.phone %}<p>{{ data.phone }}</p>{% endif %}
-        {% if data.linkedin %}<p>{{ data.linkedin }}</p>{% endif %}
-    </div>
+  <div class="right">
+    {% if data.education %}<h3>Education</h3><p>{{ data.education }}</p>{% endif %}
+    {% if data.projects %}<h3>Projects</h3><p>{{ data.projects }}</p>{% endif %}
+    {% if data.internships %}<h3>Internships</h3><p>{{ data.internships }}</p>{% endif %}
+    {% if data.certifications %}<h3>Certifications</h3><p>{{ data.certifications }}</p>{% endif %}
 
-    <!-- RIGHT PANEL -->
-    <div class="right-panel">
-
-        {% if data.masters or data.bachelors or data.hsc or data.sslc %}
-        <section>
-            <h2>EDUCATION</h2>
-            {% if data.masters %}<p><b>Master's:</b> {{ data.masters }}</p>{% endif %}
-            {% if data.bachelors %}<p><b>Bachelor's:</b> {{ data.bachelors }}</p>{% endif %}
-            {% if data.hsc %}<p><b>HSC:</b> {{ data.hsc }}</p>{% endif %}
-            {% if data.sslc %}<p><b>SSLC:</b> {{ data.sslc }}</p>{% endif %}
-        </section>
-        {% endif %}
-
-        {% if data.skills %}
-        <section>
-            <h2>SKILLS</h2>
-            <ul>
-                {% for skill in data.skills.split(',') %}
-                <li>{{ skill }}</li>
-                {% endfor %}
-            </ul>
-        </section>
-        {% endif %}
-
-        {% if data.certifications %}
-        <section>
-            <h2>CERTIFICATIONS</h2>
-            <p>{{ data.certifications }}</p>
-        </section>
-        {% endif %}
-
-        {% if data.internships %}
-        <section>
-            <h2>INTERNSHIPS</h2>
-            <p>{{ data.internships }}</p>
-        </section>
-        {% endif %}
-
-        {% if data.projects %}
-        <section>
-            <h2>PROJECTS</h2>
-            <p>{{ data.projects }}</p>
-        </section>
-        {% endif %}
-
-        {% if signature %}
-        <div class="signature-box">
-            <p><b>Signature</b></p>
-            <img src="{{ url_for('static', filename='uploads/' + signature) }}" class="signature">
-        </div>
-        {% endif %}
-
-    </div>
+    {% if data.signature %}
+      <img src="/{{ data.signature }}" class="signature">
+    {% endif %}
+  </div>
 </div>
+
+<a href="/download" class="download">Download PDF</a>
 
 </body>
 </html>
