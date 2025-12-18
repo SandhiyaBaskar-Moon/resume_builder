@@ -2,121 +2,43 @@
 <html>
 <head>
     <title>Resume Preview</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-
-    <style>
-        body {
-            font-family: "Segoe UI", Arial, sans-serif;
-            background-color: #f7f1e3;
-            color: #4b2e2e;
-            margin: 0;
-            padding: 0;
-        }
-
-        .resume {
-            width: 800px;
-            margin: 40px auto;
-            background: #fffaf0;
-            padding: 40px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
-
-        .profile-pic {
-            width: 130px;
-            height: 130px;
-            border-radius: 50%;
-            object-fit: cover;
-            display: block;
-            margin-bottom: 20px;
-        }
-
-        h1 {
-            font-size: 30px;
-            border-bottom: 2px solid #4b2e2e;
-            padding-bottom: 8px;
-        }
-
-        h2, h3 {
-            margin-top: 30px;
-            color: #5a3825;
-        }
-
-        ul {
-            padding-left: 20px;
-        }
-
-        li {
-            margin-bottom: 6px;
-        }
-
-        .download-btn {
-            margin-top: 30px;
-            padding: 10px 18px;
-            background-color: #6f4e37;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-
-        .download-btn:hover {
-            background-color: #5a3825;
-        }
-    </style>
 </head>
-
 <body>
 
-<div class="resume">
+<h1>{{ data.name }}</h1>
 
-    {% if photo %}
-        <img src="{{ url_for('static', filename='uploads/' ~ photo) }}"
-             class="profile-pic">
-    {% endif %}
+<p><b>Email:</b> {{ data.email }}</p>
+<p><b>Phone:</b> {{ data.phone }}</p>
+<p><b>LinkedIn:</b> {{ data.linkedin }}</p>
 
-    <h1>{{ data.name }}</h1>
+{% if photo %}
+<img src="{{ url_for('static', filename='uploads/' + photo) }}" width="120">
+{% endif %}
 
-    <div class="contact">
-        {% if data.email %}<p><b>Email:</b> {{ data.email }}</p>{% endif %}
-        {% if data.phone %}<p><b>Phone:</b> {{ data.phone }}</p>{% endif %}
-        {% if data.linkedin %}<p><b>LinkedIn:</b> {{ data.linkedin }}</p>{% endif %}
-    </div>
+<hr>
 
-    <h2>Education</h2>
-    <ul>
-        {% if data.masters %}<li>{{ data.masters }}</li>{% endif %}
-        {% if data.bachelors %}<li>{{ data.bachelors }}</li>{% endif %}
-        {% if data.hsc %}<li>{{ data.hsc }}</li>{% endif %}
-        {% if data.sslc %}<li>{{ data.sslc }}</li>{% endif %}
-    </ul>
+{% if data.education %}
+<h2>Education</h2>
+<p>{{ data.education }}</p>
+{% endif %}
 
-    {% if data.skills %}
-        <h2>Skills</h2>
-        <ul>
-            {% for skill in data.skills.split(',') %}
-                <li>{{ skill }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+{% if data.skills %}
+<h2>Skills</h2>
+<p>{{ data.skills }}</p>
+{% endif %}
 
-    {% if data.projects %}
-        <h3>Projects</h3>
-        <ul>
-            {% for project in data.projects.split(',') %}
-                <li>{{ project }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+{% if data.projects %}
+<h2>Projects</h2>
+<p>{{ data.projects }}</p>
+{% endif %}
 
-    <form action="/download" method="post">
-        {% for key, value in data.items() %}
-            <input type="hidden" name="{{ key }}" value="{{ value }}">
-        {% endfor %}
-        <button class="download-btn" type="submit">
-            Download Resume (PDF)
-        </button>
-    </form>
-
-</div>
+<form action="/download" method="POST">
+    {% for key, value in data.items() %}
+        <input type="hidden" name="{{ key }}" value="{{ value }}">
+    {% endfor %}
+    <input type="hidden" name="photo" value="{{ photo }}">
+    <button type="submit">Download Resume (PDF)</button>
+</form>
 
 </body>
 </html>

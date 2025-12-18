@@ -1,69 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
     <title>Resume Builder</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-
 <body>
 
-<h1 class="page-title">Resume Builder</h1>
+<h2>Resume Form</h2>
 
-<div class="container">
+<form action="/preview" method="POST" enctype="multipart/form-data">
 
-    <form method="POST" action="/preview" enctype="multipart/form-data">
+    <label>Name</label><br>
+    <input type="text" name="name" required><br><br>
 
-        <div class="section-title">Personal Information</div>
+    <label>Email</label><br>
+    <input type="email" name="email"><br><br>
 
-        <label for="name">Full Name</label>
-        <input type="text" id="name" name="name" required>
+    <label>Phone</label><br>
+    <input type="text" name="phone"><br><br>
 
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" required>
+    <label>LinkedIn</label><br>
+    <input type="text" name="linkedin"><br><br>
 
-        <label for="phone">Phone</label>
-        <input type="text" id="phone" name="phone" required>
+    <label>Education</label><br>
+    <textarea name="education"></textarea><br><br>
 
-        <label for="photo">Upload Photo</label>
-        <input type="file" id="photo" name="photo" accept="image/*">
+    <label>Skills</label><br>
+    <textarea name="skills"></textarea><br><br>
 
-        <label for="linkedin">LinkedIn Profile</label>
-        <input type="text" id="linkedin" name="linkedin">
+    <label>Projects</label><br>
+    <textarea name="projects"></textarea><br><br>
 
-        <div class="section-title">Education Qualification</div>
+    <label>Photo</label><br>
+    <input type="file" name="photo"><br><br>
 
-        <label for="masters">Masters Degree</label>
-        <input type="text" id="masters" name="masters">
+    <button type="submit">Preview Resume</button>
 
-        <label for="bachelors">Bachelors Degree</label>
-        <input type="text" id="bachelors" name="bachelors">
-
-        <label for="hsc">HSC</label>
-        <input type="text" id="hsc" name="hsc">
-
-        <label for="sslc">SSLC</label>
-        <input type="text" id="sslc" name="sslc">
-
-        <div class="section-title">Professional Details</div>
-
-        <label for="skills">Skills</label>
-        <textarea id="skills" name="skills"></textarea>
-
-        <label for="certifications">Certifications</label>
-        <textarea id="certifications" name="certifications"></textarea>
-
-        <label for="internships">Internships</label>
-        <textarea id="internships" name="internships"></textarea>
-
-        <label for="projects">Projects</label>
-        <textarea id="projects" name="projects"></textarea>
-
-        <button type="submit">Preview Resume</button>
-
-    </form>
-
-</div>
+</form>
 
 </body>
 </html>
