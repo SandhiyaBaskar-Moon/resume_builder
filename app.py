@@ -1,28 +1,30 @@
-from flask import Flask, render_template, request, send_file
+from flask import Flask, render_template, request, send_file, redirect, url_for
 from werkzeug.utils import secure_filename
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 import os
 import io
 
-# Create Flask app
 app = Flask(__name__)
 
-# Upload folder config
+# Upload folder
 UPLOAD_FOLDER = 'static/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-# Home page (Form)
+# Home page
 @app.route('/')
 def home():
     return render_template('form.html')
 
-# Preview Resume
-@app.route('/preview', methods=['POST'])
+# Preview Resume (GET + POST)
+@app.route('/preview', methods=['GET', 'POST'])
 def preview():
-    data = request.form.to_dict()
+    if request.method == 'GET':
+        # Direct URL hit panna redirect to home
+        return redirect(url_for('home'))
 
+    data = request.form.to_dict()
     photo = request.files.get('photo')
     photo_filename = None
 
@@ -36,7 +38,7 @@ def preview():
         photo=photo_filename
     )
 
-# Download Resume as PDF
+# Download PDF
 @app.route('/download', methods=['POST'])
 def download():
     data = request.form.to_dict()
@@ -46,28 +48,18 @@ def download():
     width, height = A4
     y = height - 50
 
-    # Add Photo (top right)
+    # Photo
     photo_filename = data.get('photo')
     if photo_filename:
         photo_path = os.path.join(app.config['UPLOAD_FOLDER'], photo_filename)
         if os.path.exists(photo_path):
-            pdf.drawImage(
-                photo_path,
-                width - 150,
-                height - 150,
-                width=100,
-                height=100,
-                mask='auto'
-            )
+            pdf.drawImage(photo_path, width - 150, height - 150, 100, 100)
 
-    # Name
     pdf.setFont("Helvetica-Bold", 18)
     pdf.drawString(50, y, data.get('name', ''))
-
     y -= 30
-    pdf.setFont("Helvetica", 12)
 
-    # Contact details
+    pdf.setFont("Helvetica", 12)
     if data.get('email'):
         pdf.drawString(50, y, f"Email: {data.get('email')}")
         y -= 18
@@ -78,7 +70,6 @@ def download():
 
     if data.get('linkedin'):
         pdf.drawString(50, y, f"LinkedIn: {data.get('linkedin')}")
-        y -= 25
 
     pdf.showPage()
     pdf.save()
@@ -91,6 +82,6 @@ def download():
         mimetype="application/pdf"
     )
 
-# Run app
+# Run
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 10000)))
