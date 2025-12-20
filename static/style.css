@@ -1,6 +1,6 @@
 body {
   background: #eef2f5;
-  font-family: Arial;
+  font-family: "DejaVu Sans", Arial, sans-serif;
 }
 
 .card {
@@ -34,14 +34,30 @@ button {
 }
 
 .left {
-  width: 35%;
+  width: 190px;      /* FIXED – matches PDF */
   background: #f5f7fa;
   padding: 20px;
 }
 
 .right {
-  width: 65%;
-  padding: 30px;
+  width: calc(100% - 190px);
+  padding: 30px 40px 30px 15px;
+}
+
+.right ul {
+  margin-left: 18px;
+  margin-top: 8px;
+  margin-bottom: 15px;
+  padding-left: 0;
+}
+
+.right li {
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+.right ul {
+  list-style-position: outside;
 }
 
 .photo {
